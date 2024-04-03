@@ -1,0 +1,39 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@iconify/vue": "^4.1.1",
+        "@inertiajs/vue3": "^1.0.0",
+        "@tailwindcss/forms": "^0.5.3",
+        "@vitejs/plugin-vue": "^5.0.0",
+        "autoprefixer": "^10.4.12",
+        "axios": "^1.6.4",
+        "eslint": "^8.57.0",
+        "eslint-plugin-vue": "^9.22.0",
+        "laravel-vite-plugin": "^1.0.0",
+        "postcss": "^8.4.31",
+        "sass": "^1.71.1",
+        "tailwindcss": "^3.2.1",
+        "vite": "^5.0.0",
+        "vue": "^3.4.0"
+    },
+    "dependencies": {
+        "@shopify/app-bridge": "^3.7.10",
+        "@tiptap/pm": "^2.2.4",
+        "@tiptap/starter-kit": "^2.2.4",
+        "@tiptap/vue-3": "^2.2.4",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.0",
+        "lodash": "^4.17.21",
+        "lucide-vue-next": "^0.344.0",
+        "pinia": "^2.1.7",
+        "radix-vue": "^1.4.9",
+        "tailwind-merge": "^2.2.1",
+        "tailwindcss-animate": "^1.0.7",
+        "vue3-colorpicker": "^2.3.0"
+    }
+}
