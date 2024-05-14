@@ -7,7 +7,6 @@ use GuzzleHttp\Promise\Promise;
 use Illuminate\Support\Collection;
 use App\Traits\ShopifyAPIs\ClassInstantiator;
 use App\ShopifyAPIs\Abstracts\ShopifyAPIModel;
-use App\Traits\ShopifyAPIs\GraphQL\HasWarehouseLocations;
 use App\Traits\ShopifyAPIs\GraphQL\HasGraphQLRequest;
 
 /**
@@ -15,7 +14,7 @@ use App\Traits\ShopifyAPIs\GraphQL\HasGraphQLRequest;
  */
 class Location extends ShopifyAPIModel
 {
-    use ClassInstantiator, HasGraphQLRequest, HasWarehouseLocations;
+    use ClassInstantiator, HasGraphQLRequest;
 
     public function getDefault(): Location
     {
