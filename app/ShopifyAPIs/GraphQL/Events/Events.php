@@ -12,17 +12,12 @@ class Events extends ShopifyAPIModel
 {
     use ClassInstantiator, HasGraphQLRequest;
 
-    // public function __construct(private ?User $user = null)
-    // {
-    //     $this->user = $user ?? auth()->user();
-    // }
-
-    public function webhookSubscriptionCreate(array $variables): Events|array
+    public function webhookSubscriptionCreate(array $variables): Events
     {
         $response = $this->graphQlRequest(Schema::webhookSubscriptionCreate(), $variables);
 
-        $res = Arr::get($response, 'webhookSubscriptionCreate.webhookSubscription');
+        $response = data_get($response, 'webhookSubscriptionCreate.webhookSubscription');
 
-        return $res ? $this->setAttributes($res) : $response;
+        return $this->setAttributes($response);
     }
 }

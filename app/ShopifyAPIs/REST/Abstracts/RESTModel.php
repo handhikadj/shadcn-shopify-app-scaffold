@@ -17,8 +17,12 @@ abstract class RESTModel implements Arrayable
         $this->user = $user ?? auth()->user();
     }
 
-    public function setAttributes(array $attributes): self
+    public function setAttributes(?array $attributes): self
     {
+        if (!$attributes) {
+            return clone $this;
+        }
+
         foreach ($attributes as $key => $value) {
             $this->{$key} = $value;
             $this->original[$key] = $value;

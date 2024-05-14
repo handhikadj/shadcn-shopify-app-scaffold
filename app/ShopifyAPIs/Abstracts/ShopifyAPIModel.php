@@ -21,8 +21,10 @@ abstract class ShopifyAPIModel implements Arrayable
         $this->user = $user ?? auth()->user();
     }
 
-    public function setAttributes(array $attributes): self
+    public function setAttributes(?array $attributes): self
     {
+        if (!$attributes) return clone $this;
+
         foreach ($attributes as $key => $value) {
             $this->{$key} = $value;
             $this->original[$key] = $value;
@@ -35,6 +37,21 @@ abstract class ShopifyAPIModel implements Arrayable
         $this->original['resource_id'] = $this->resource_id;
 
         return clone $this;
+    }
+
+    public function hasAttributes(): bool
+    {
+        return !empty($this->original);
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->original);
+    }
+
+    public function isNotEmpty(): bool
+    {
+        return !$this->isEmpty();
     }
 
     public function toArray(): array

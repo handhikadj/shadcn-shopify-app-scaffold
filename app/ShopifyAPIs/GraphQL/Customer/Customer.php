@@ -1,29 +1,24 @@
 <?php
 
-namespace App\ShopifyAPIs\GraphQL\Order;
+namespace App\ShopifyAPIs\GraphQL\Customer;
 
 use App\Traits\ShopifyAPIs\ClassInstantiator;
 use App\ShopifyAPIs\Abstracts\ShopifyAPIModel;
 use App\Traits\ShopifyAPIs\GraphQL\HasGraphQLRequest;
 
-class Order extends ShopifyAPIModel
+class Customer extends ShopifyAPIModel
 {
     use ClassInstantiator, HasGraphQLRequest;
 
-    public function retrieve(string|int $id)
-    {
-        $response = $this->graphQlRequest(Schema::retrieve($id));
-
-        return $this->setAttributes($response['node']);
-    }
-
-    public function update(array $data): Order
+    public function update(array $data): self
     {
         $response = $this->graphQlRequest(Schema::update(), [
             'input' => $data
         ]);
 
-        $response = data_get($response, 'orderUpdate.order');
+        \Log::info('Customer update response', ['response' => $response]);
+
+        $response = data_get($response, 'customerUpdate.customer');
 
         return $this->setAttributes($response);
     }

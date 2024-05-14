@@ -13,11 +13,6 @@ class Inventory extends ShopifyAPIModel
 {
     use ClassInstantiator, HasGraphQLRequest;
 
-    // public function __construct(private ?User $user = null)
-    // {
-    //     $this->user = $user ?? auth()->user();
-    // }
-
     public function bulkToggleActivation(string $inventoryItemId, array $inventoryItemUpdates): Inventory
     {
         $variables = [

@@ -11,15 +11,11 @@ use App\Traits\ShopifyAPIs\GraphQL\HasGraphQLRequest;
 
 /**
  * @property int $totalInventory
+ * @property array $tags
  */
 class Product extends ShopifyAPIModel
 {
     use ClassInstantiator, HasGraphQLRequest;
-
-    // public function __construct(private ?User $user = null)
-    // {
-    //     $this->user = $user ?? auth()->user();
-    // }
 
     public function getByIds(array $ids): Collection
     {
@@ -40,18 +36,77 @@ class Product extends ShopifyAPIModel
             $variables['media'] = $mediaData;
         }
 
-        $response = $this->graphQlRequest(Schema::create(), $variables);
+        try {
+            $response = $this->graphQlRequest(Schema::create(), $variables);
 
-        return $this->setAttributes($response['productCreate']['product']);
+            $response = data_get($response, 'productCreate.product');
+
+            return $this->setAttributes($response);
+        } catch (\Exception $e) {
+            return clone $this;
+        }
+    }
+
+    public function update(array $input): Product
+    {
+        $variables = [
+            'input' => $input,
+        ];
+
+        $response = $this->graphQlRequest(Schema::update(), $variables);
+
+        $response = data_get($response, 'productUpdate.product');
+
+        return $this->setAttributes($response);
     }
 
     public function retrieve(string|int $id): Product
     {
         $id = Str::createShopifyGqlResourceId('Product', $id);
 
-        $response = $this->graphQlRequest(Schema::retrieve($id));
+        $response = $this->graphQlRequest(Schema::retrieve(), [
+            'id' => $id,
+        ]);
 
         return $this->setAttributes($response['product']);
+    }
+
+    public function retrieveBySku(string|int $sku): Product
+    {
+        $response = $this->graphQlRequest(Schema::retrieveBySku(), [
+            'sku' => (string) $sku,
+        ]);
+
+        $response = data_get($response, 'productVariants.nodes.0.product');
+
+        return $this->setAttributes($response);
+    }
+
+    public function lastSynced(): Product
+    {
+        $response = $this->graphQlRequest(Schema::lastSynced());
+
+        $response = data_get($response, 'products.nodes.0');
+
+        return $this->setAttributes($response);
+    }
+
+    public function syncedEdeaProductsCount(): int
+    {
+        $response = $this->graphQlRequest(Schema::syncedEdeaProductsCount());
+
+        return data_get($response, 'productsCount.count', 0);
+    }
+
+    public function getMetafieldIdByNamespaceAndKey(string|int $productId, string $namespace, string $key)
+    {
+        $response = $this->graphQlRequest(Schema::getMetafieldIdByNamespaceAndKey(), [
+            'id' => Str::createShopifyGqlResourceId('Product', $productId),
+            'namespace' => $namespace,
+            'key' => $key,
+        ]);
+
+        return data_get($response, 'product.metafield.legacyResourceId');
     }
 
     public function deleteAsync(int $id)

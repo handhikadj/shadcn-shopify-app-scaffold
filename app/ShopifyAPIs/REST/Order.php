@@ -30,6 +30,6 @@ class Order extends RESTModel
 
         $res = data_get($response, 'body.container');
 
-        return $res ? $this->setAttributes($res) : $res;
+        return $this->setAttributes($res);
     }
 }

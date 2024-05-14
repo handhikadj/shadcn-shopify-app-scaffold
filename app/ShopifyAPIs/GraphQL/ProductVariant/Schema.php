@@ -3,9 +3,26 @@
 namespace App\ShopifyAPIs\GraphQL\ProductVariant;
 
 use Str;
+use App\ShopifyAPIs\GraphQL\Product\Schema as ProductSchema;
 
 class Schema
 {
+    public static function responseFields(): string
+    {
+        return <<<GRAPHQL
+          id
+          barcode
+          title
+          price
+          sku
+          position
+          inventoryQuantity
+          inventoryItem {
+            id
+          }
+        GRAPHQL;
+    }
+
     private static function getInventoryLevelByLocationId(string|int $locationId): string
     {
         $locationId = Str::createShopifyGqlResourceId('Location', $locationId);
@@ -13,7 +30,27 @@ class Schema
         return <<<QUERY
           inventoryLevel(locationId:"$locationId") {
              id
-             available
+             quantities(names: ["available"]) {
+                name
+                quantity
+             }
+          }
+        QUERY;
+    }
+
+    public static function all(string|int $productId)
+    {
+        $responseFields = self::responseFields();
+
+        return <<<QUERY
+          query {
+            productVariants(first: 10, query: "product_id:$productId") {
+              edges {
+                node {
+                  $responseFields
+                }
+              }
+            }
           }
         QUERY;
     }
@@ -22,18 +59,18 @@ class Schema
     {
         $locationQuery = $locationId ? self::getInventoryLevelByLocationId($locationId) : '';
 
+        $responseFields = self::responseFields();
+
         return <<<QUERY
           query {
             productVariants(first: 1, query: "(product_id:$productId) AND (title:Default*)") {
               edges {
                 node {
-                  id
-                  title
+                  $responseFields
                   inventoryItem {
                     id
                     $locationQuery
                   }
-                  inventoryQuantity
                 }
               }
             }
@@ -43,17 +80,13 @@ class Schema
 
     public static function create(): string
     {
-        return <<<'GRAPHQL'
-            mutation productVariantCreate($input: ProductVariantInput!) {
-              productVariantCreate(input: $input) {
+        $responseFields = self::responseFields();
+
+        return <<<GRAPHQL
+            mutation productVariantCreate(\$input: ProductVariantInput!) {
+              productVariantCreate(input: \$input) {
                 productVariant {
-                  id
-                  barcode
-                  title
-                  price
-                  sku
-                  position
-                  inventoryQuantity
+                  $responseFields
                 }
                 userErrors {
                   field
@@ -66,23 +99,80 @@ class Schema
 
     public static function update(): string
     {
-        return <<<'GRAPHQL'
-            mutation productVariantUpdate($input: ProductVariantInput!) {
-              productVariantUpdate(input: $input) {
+        $responseFields = self::responseFields();
+        $productResponseFields = ProductSchema::responseFields();
+
+        return <<<GRAPHQL
+            mutation productVariantUpdate(\$input: ProductVariantInput!) {
+              productVariantUpdate(input: \$input) {
                 productVariant {
-                  id
-                  barcode
-                  title
-                  price
-                  sku
-                  position
-                  inventoryQuantity
+                    $responseFields
+                    product {
+                        $productResponseFields
+                    }
                 }
                 userErrors {
                   field
                   message
                 }
               }
+            }
+        GRAPHQL;
+    }
+
+    public static function retrieve(): string
+    {
+        $responseFields = self::responseFields();
+        $productResponseFields = ProductSchema::responseFields();
+
+        return <<<GRAPHQL
+            query productVariant(\$id: ID!) {
+                productVariant(id: \$id) {
+                    $responseFields
+                    product {
+                        $productResponseFields
+                    }
+                }
+            }
+        GRAPHQL;
+
+    }
+
+    public static function retrieveBySku(string|int|null $locationId = null): string
+    {
+        $locationQuery = $locationId ? self::getInventoryLevelByLocationId($locationId) : '';
+
+        $responseFields = self::responseFields();
+        $productResponseFields = ProductSchema::responseFields();
+
+        return <<<GRAPHQL
+            query productVariants(\$sku: String!) {
+                productVariants(first: 1, query: \$sku) {
+                    nodes {
+                        $responseFields
+                        inventoryItem {
+                            id
+                            $locationQuery
+                        }
+                        product {
+                            $productResponseFields
+                        }
+                    }
+                }
+            }
+        GRAPHQL;
+    }
+
+    public static function getMetafieldIdByNamespaceAndKey(): string
+    {
+        return <<<'GRAPHQL'
+            query($id:ID!,$namespace:String!,$key:String!) {
+                productVariant(id:$id) {
+                    metafield(namespace:$namespace,key:$key) {
+                        legacyResourceId
+                        value
+                    }
+                }
             }
         GRAPHQL;
     }
