@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Arr;
+use Str;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Str::macro('createShopifyGqlResourceId', function (string $resourceName, string $id): string {
+            return !Str::contains($id, "gid://shopify") ? "gid://shopify/$resourceName/$id" : $id;
+        });
+        Str::macro('getShopifyGqlResourceId', function (string $url): string {
+            return !Str::contains($url, "gid://shopify") ? $url : Str::afterLast($url, '/');
+        });
+
+        Arr::macro('recursive', function ($obj) {
+            if (is_object($obj) || is_array($obj)) {
+                $ret = (array) $obj;
+                foreach ($ret as &$item) {
+                    //recursively process EACH element regardless of type
+                    $item = Arr::recursive($item);
+                }
+
+                return $ret;
+            }
+
+            return $obj;
+        });
     }
 }
