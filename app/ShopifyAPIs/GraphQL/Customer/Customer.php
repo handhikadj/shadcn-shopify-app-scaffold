@@ -16,8 +16,6 @@ class Customer extends ShopifyAPIModel
             'input' => $data
         ]);
 
-        \Log::info('Customer update response', ['response' => $response]);
-
         $response = data_get($response, 'customerUpdate.customer');
 
         return $this->setAttributes($response);

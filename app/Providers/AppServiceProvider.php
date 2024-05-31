@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use Arr;
 use Str;
+use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
+use Opcodes\LogViewer\Facades\LogViewer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,6 +42,12 @@ class AppServiceProvider extends ServiceProvider
             }
 
             return $obj;
+        });
+
+        LogViewer::auth(fn ($request) => true);
+
+        Collection::macro('setRestModelAttributes', function ($restModel) {
+            return $this->map(fn ($item) => $restModel->setAttributes($item));
         });
     }
 }
