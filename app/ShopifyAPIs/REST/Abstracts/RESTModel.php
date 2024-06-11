@@ -33,7 +33,7 @@ abstract class RESTModel implements Arrayable
 
     public function toArray(): array
     {
-        return Arr::except(get_object_vars($this), ['user']);
+        return $this->original;
     }
 
     public function getResourceName(): string
