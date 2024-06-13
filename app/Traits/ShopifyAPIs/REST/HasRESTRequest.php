@@ -20,7 +20,13 @@ trait HasRESTRequest
         if ($response['errors']) {
             if ($response['status'] === 404) return null;
 
-            Log::error('ShopifyAdminAPIs/REST/HasRESTRequest::request error: ' . json_encode($response['body']));
+            Log::error('ShopifyAdminAPIs/REST/HasRESTRequest::request error: ' . json_encode($response['body']), [
+                'context' => 'ShopifyAdminAPIs/REST/HasRESTRequest::request',
+                'url' => $url,
+                'method' => $method,
+                'params' => $params,
+                'response' => $response,
+            ]);
 
             throw new Exception(json_encode($response));
         }
