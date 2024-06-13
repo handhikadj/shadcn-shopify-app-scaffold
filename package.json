@@ -26,14 +26,17 @@
         "@tiptap/pm": "^2.2.4",
         "@tiptap/starter-kit": "^2.2.4",
         "@tiptap/vue-3": "^2.2.4",
+        "@vueuse/core": "^10.11.0",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.0",
+        "dayjs": "^1.11.11",
         "lodash": "^4.17.21",
         "lucide-vue-next": "^0.344.0",
         "pinia": "^2.1.7",
         "radix-vue": "^1.4.9",
         "tailwind-merge": "^2.2.1",
         "tailwindcss-animate": "^1.0.7",
+        "v-calendar": "^3.1.2",
         "vue3-colorpicker": "^2.3.0"
     }
 }

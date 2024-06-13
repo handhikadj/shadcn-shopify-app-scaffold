@@ -42,7 +42,3 @@ const modelValue = defineModel({
     required: true
 })
 </script>
-
-<style scoped>
-
-</style>

@@ -4,7 +4,7 @@
         <input
             :id="id"
             v-model="modelValue"
-            type="text"
+            :type="type"
             class="border border-gray-400 input-spacing w-full rounded-xl"
             :placeholder="placeholder"
         >
@@ -25,6 +25,10 @@ defineProps({
         type: String,
         default: '',
     },
+    type: {
+        type: String,
+        default: 'text',
+    }
 })
 
 const modelValue = defineModel({
@@ -32,9 +36,3 @@ const modelValue = defineModel({
     required: true,
 })
 </script>
-
-
-
-<style scoped>
-
-</style>
