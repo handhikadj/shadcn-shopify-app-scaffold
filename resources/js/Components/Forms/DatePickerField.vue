@@ -4,11 +4,16 @@
             <Button
                 variant="outline"
                 :class="cn(
-                    'w-[280px] justify-start text-left font-normal',
+                    'justify-start text-left font-normal border-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                    props.class
                 )"
             >
                 <CalendarIcon class="mr-2 h-4 w-4" />
-                {{ modelValue ? dayjs(modelValue).format('DD/MM/YYYY') : placeholder }}
+                <span v-if="modelValue">{{ dayjs(modelValue).format(format) }}</span>
+                <span
+                    v-else
+                    class="text-gray-500/60"
+                >{{ placeholder }}</span>
             </Button>
         </PopoverTrigger>
         <PopoverContent class="w-auto p-0">
@@ -35,7 +40,7 @@ const modelValue = defineModel({
     required: true,
 })
 
-defineProps({
+const props = defineProps({
     placeholder: {
         type: String,
         default: 'Please select a date',
@@ -44,5 +49,13 @@ defineProps({
         type: Object,
         default: () => ({}),
     },
+    format: {
+        type: String,
+        default: 'DD/MM/YYYY',
+    },
+    class: {
+        type: String,
+        default: '',
+    }
 })
 </script>
